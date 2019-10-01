@@ -2,8 +2,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-//import static java.util.Arrays.copyOf;
-
 public class WordStatWords {
 
     public static void main(String[] args) {
@@ -72,7 +70,7 @@ public class WordStatWords {
                 out.close();
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Input file not found: " + e.getMessage());
+            System.out.println("Output file not found: " + e.getMessage());
         } catch (IOException e) {
             System.out.println("Output file error: " + e.getMessage());
         }
