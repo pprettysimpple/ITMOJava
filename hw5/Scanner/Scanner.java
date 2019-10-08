@@ -19,15 +19,15 @@ public class Scanner {
     private boolean hasNextResultInt = false;
 
     public Scanner(String s) {
-        this(s, 1);
+        this(s, 1024);
     }
 
     public Scanner(Reader r) {
-        this(r, 1);
+        this(r, 1024);
     }
 
     public Scanner(InputStream s) {
-        this(s, 1);
+        this(s, 1024);
     }
 
     public Scanner(String s, int len) {
@@ -46,19 +46,26 @@ public class Scanner {
         buff.limit(0);
     }
 
-    public void close() throws IOException {
-        br.close();
+    public void close() {
+        try {
+            br.close();
+        } catch (IOException e) {
+            System.out.println("Can not close reader: " + e.getMessage());
+        }
     }
 
     private void decreaseSavedIndex(int offset) {
         if (savedPosition != -1) {
             savedPosition -= offset;
         }
+        if (hasNextPosition != -1) {
+            hasNextPosition -= offset;
+        }
         position -= offset;
     }
 
     private void makeSpace() {
-        int offset = ((savedPosition == -1) ? position : savedPosition);
+        int offset = (savedPosition == -1) ? position : savedPosition;
         int p = buff.position() - offset;
         buff.position(offset);
         if (offset > 0) {
@@ -75,7 +82,7 @@ public class Scanner {
         buff.position(p);
     }
 
-    private boolean readInput() {
+    private boolean readInput() throws IOException {
         if (buff.limit() == buff.capacity()) {
             makeSpace();
         }
@@ -83,12 +90,7 @@ public class Scanner {
         buff.position(buff.limit());
         buff.limit(buff.capacity());
 
-        int n;
-        try {
-            n = br.read(buff);
-        } catch (IOException e) {
-            n = -1;
-        }
+        int n = br.read(buff);
         buff.limit(buff.position());
         buff.position(p);
         return n > 0;
@@ -101,7 +103,7 @@ public class Scanner {
     }
 
     private void saveState() {
-        savedPosition = buff.position();
+        savedPosition = position;
     }
 
     private void revertState() {
@@ -121,7 +123,7 @@ public class Scanner {
         return true;
     }
 
-    public boolean findFirstWord() {
+    public boolean findFirstWord() throws IOException {
         if (hasNextPosition != -1) {
             return true;
         }
@@ -130,9 +132,11 @@ public class Scanner {
             if (!Character.isWhitespace(c)) {
                 StringBuilder sb = new StringBuilder();
                 buff.position(buff.position() - 1);
-                while (!Character.isWhitespace(c) && (buff.position() != buff.limit() || readInput())) {
+                while ((buff.position() != buff.limit() || readInput())) {
                     if (!Character.isWhitespace(c = buff.get())) {
                         sb.append(c);
+                    } else {
+                        break;
                     }
                 }
                 hasNextPosition = buff.position();
@@ -144,7 +148,7 @@ public class Scanner {
         return false;
     }
 
-    public boolean hasNext() {
+    public boolean hasNext() throws IOException {
         if (hasNextPosition != -1) {
             return true;
         }
@@ -163,15 +167,15 @@ public class Scanner {
         return false;
     }
 
-    public boolean hasNextInt() {
+    public boolean hasNextInt() throws IOException {
         return hasNext() && hasNextResultInt;
     }
 
-    public boolean hasNextLine() {
+    public boolean hasNextLine() throws IOException {
         return hasNext() || (buff.limit() != buff.position());
     }
 
-    private String next() {
+    private String next() throws IOException {
         if (hasNextPosition == -1) {
             if (!hasNext()) {
                 throw new NoSuchElementException();
@@ -183,7 +187,7 @@ public class Scanner {
         return nextWord;
     }
 
-    public int nextInt() {
+    public int nextInt() throws IOException {
         if (hasNextPosition == -1) {
             if (!hasNext()) {
                 throw new NoSuchElementException();
@@ -198,7 +202,7 @@ public class Scanner {
         return nextInteger;
     }
 
-    public String nextLine() {
+    public String nextLine() throws IOException {
         StringBuilder sb = new StringBuilder();
         while (position != buff.limit() || readInput()) {
             char c = buff.get();
