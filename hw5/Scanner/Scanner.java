@@ -1,6 +1,11 @@
 import java.io.*;
 
+interface Checker {
+    boolean isWordCharacter(char c);
+}
+
 public class Scanner {
+
     private Reader br;
 
     private char[] buff;
@@ -9,20 +14,12 @@ public class Scanner {
 
     private int size = -1;
 
-    public Scanner(String s) {
-        this(s, 1024);
-    }
-
     public Scanner(Reader r) {
         this(r, 1024);
     }
 
     public Scanner(InputStream s) {
         this(s, 1024);
-    }
-
-    public Scanner(String s, int len) {
-        this(new ByteArrayInputStream(s.getBytes()), len);
     }
 
     public Scanner(Reader r, int len) {
@@ -53,49 +50,50 @@ public class Scanner {
         return !(size <= 0 || position >= size) || readInput();
     }
 
-    private void skipWhitespaceExceptSeparator() throws IOException {
-        while (hasInput() && Character.isWhitespace(buff[position]) && buff[position] != '\n') {
+    private void skipWhitespaceExceptSeparator(Checker checker) throws IOException {
+        while (hasInput() && !checker.isWordCharacter(buff[position]) && buff[position] != '\n') {
             position++;
         }
     }
 
-    public void skipSeparator() throws IOException {
+    public void skipSeparator(Checker checker) throws IOException {
         while (hasInput()) {
-            if (buff[position++] == '\n') {
+            if (!checker.isWordCharacter(buff[position]) || buff[position++] == '\n') {
                 break;
             }
         }
     }
 
-    public boolean isNextLine() throws IOException {
-        skipWhitespaceExceptSeparator();
+    public boolean isNextLine(Checker checker) throws IOException {
+        skipWhitespaceExceptSeparator(checker);
         return !hasInput() || buff[position] == '\n';
     }
 
-    public boolean isEmpty() throws IOException {
-        skipWhitespaceExceptSeparator();
+    public boolean isEmpty(Checker checker) throws IOException {
+        skipWhitespaceExceptSeparator(checker);
         return !hasInput();
     }
 
-    public String next() throws IOException {
-        skipWhitespaceExceptSeparator();
+    public String next(Checker checker) throws IOException {
+        skipWhitespaceExceptSeparator(checker);
         StringBuilder result = new StringBuilder();
-        while (
-                hasInput()
-                && position < size
-                && !Character.isWhitespace(buff[position])
+        while (hasInput()
+                        && position < size
+                        && checker.isWordCharacter(buff[position])
         ) {
             result.append(buff[position++]);
         }
         return result.toString();
     }
 
-    public int nextInt() throws IOException {
-        return Integer.parseInt(next());
+    public boolean hasNext(Checker checker) throws IOException {
+        while (hasInput() && !checker.isWordCharacter(buff[position])) {
+            position++;
+        }
+        return hasInput();
     }
 
-    char nextChar() throws IOException {
-        hasInput();
-        return buff[position++];
+    public int nextInt(Checker checker) throws IOException {
+        return Integer.parseInt(next(checker));
     }
 }

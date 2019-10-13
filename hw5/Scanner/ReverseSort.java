@@ -13,19 +13,27 @@ class Tuple {
     }
 }
 
+class ReverseChecker implements Checker {
+    public boolean isWordCharacter(char c) {
+        return !Character.isWhitespace(c);
+    }
+}
+
 public class ReverseSort {
+
+    private static ReverseChecker reverseChecker;
 
     public static void main(String[] args) {
         Tuple[] a = new Tuple[1];
         int n = 0;
         Scanner text = new Scanner(System.in);
         try {
-            while (!text.isEmpty()) {
+            while (!text.isEmpty(reverseChecker)) {
                 int[] row = new int[1];
                 int cnt = 0;
                 long sum = 0;
-                while (!text.isNextLine() && !text.isEmpty()) {
-                    int val = text.nextInt();
+                while (!text.isNextLine(reverseChecker) && !text.isEmpty(reverseChecker)) {
+                    int val = text.nextInt(reverseChecker);
                     if (cnt == row.length) {
                         row = Arrays.copyOf(row, row.length * 2);
                     }
@@ -48,7 +56,7 @@ public class ReverseSort {
                     a = Arrays.copyOf(a, a.length * 2);
                 }
                 a[n++] = new Tuple(sum, n, curRow.toString());
-                text.skipSeparator();
+                text.skipSeparator(reverseChecker);
             }
         } catch(IOException e) {
             System.out.println("Input Error: " + e.getMessage());

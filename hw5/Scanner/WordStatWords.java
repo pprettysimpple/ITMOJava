@@ -2,7 +2,16 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+class WordStatChecker implements Checker {
+    public boolean isWordCharacter(char c) {
+        return (Character.getType(c) == Character.DASH_PUNCTUATION
+                || Character.isLetter(c) || c == '\'');
+    }
+}
+
 public class WordStatWords {
+
+    private static WordStatChecker wordStatChecker = new WordStatChecker();
 
     public static void main(String[] args) {
         String[] arr = new String[1];
@@ -15,26 +24,11 @@ public class WordStatWords {
                     )
             );
             try {
-                while (in.hasInput()) {
-                    boolean wordCharacter;
-                    StringBuilder word = new StringBuilder("");
-                    do {
-                        char c = in.nextChar();
-                        wordCharacter = (Character.getType(c) == Character.DASH_PUNCTUATION
-                                || Character.isLetter(c) || c == '\'');
-                        if (wordCharacter) {
-                            word.append(c);
-                        }
-                    } while (wordCharacter && in.hasInput());
-
-                    if (word.length() == 0) {
-                        continue;
-                    }
-
+                while (in.hasNext(wordStatChecker)) {
                     if (size == arr.length) {
                         arr = Arrays.copyOf(arr, 2 * size);
                     }
-                    arr[size++] = word.toString().toLowerCase();
+                    arr[size++] = in.next(wordStatChecker).toString().toLowerCase();
                 }
             } finally {
                 in.close();
@@ -62,7 +56,7 @@ public class WordStatWords {
                     while (i + cnt < arr.length && arr[i].equals(arr[i + cnt])) {
                         cnt++;
                     }
-                    out.write( new StringBuilder(arr[i]).append(" ").append(cnt).append("\n").toString());
+                    out.write(new StringBuilder(arr[i]).append(" ").append(cnt).append("\n").toString());
                     i += cnt;
                 }
             }
