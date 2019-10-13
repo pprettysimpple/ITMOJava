@@ -20,14 +20,12 @@ public class ReverseSort {
         int n = 0;
         Scanner text = new Scanner(System.in);
         try {
-            while (text.hasNextLine()) {
-                Integer[] row = new Integer[1];
-                String s = text.nextLine();
-                Scanner line = new Scanner(s);
+            while (!text.isEmpty()) {
+                int[] row = new int[1];
                 int cnt = 0;
                 long sum = 0;
-                while (line.hasNextInt()) {
-                    int val = line.nextInt();
+                while (!text.isNextLine() && !text.isEmpty()) {
+                    int val = text.nextInt();
                     if (cnt == row.length) {
                         row = Arrays.copyOf(row, row.length * 2);
                     }
@@ -35,9 +33,14 @@ public class ReverseSort {
                     sum += val;
                 }
                 row = Arrays.copyOf(row, cnt);
-                Arrays.sort(row, Collections.reverseOrder());
+                Arrays.sort(row);
+                for (int i = 0; i < row.length / 2; i++) {
+                    row[i] ^= row[row.length - i - 1];
+                    row[row.length - i - 1] ^= row[i];
+                    row[i] ^= row[row.length - i - 1];
+                }
                 StringBuilder curRow = new StringBuilder();
-                for (Integer integer : row) {
+                for (int integer : row) {
                     curRow.append(integer).append(' ');
                 }
                 curRow.append('\n');
@@ -45,6 +48,7 @@ public class ReverseSort {
                     a = Arrays.copyOf(a, a.length * 2);
                 }
                 a[n++] = new Tuple(sum, n, curRow.toString());
+                text.skipSeparator();
             }
         } catch(IOException e) {
             System.out.println("Input Error: " + e.getMessage());
