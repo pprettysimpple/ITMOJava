@@ -21,7 +21,7 @@ class ReverseChecker implements Checker {
 
 public class ReverseSort {
 
-    private static ReverseChecker reverseChecker;
+    private static ReverseChecker reverseChecker = new ReverseChecker();
 
     public static void main(String[] args) {
         Tuple[] a = new Tuple[1];
@@ -32,7 +32,7 @@ public class ReverseSort {
                 int[] row = new int[1];
                 int cnt = 0;
                 long sum = 0;
-                while (!text.isNextLine(reverseChecker) && !text.isEmpty(reverseChecker)) {
+                while (!text.isEndOfLine(reverseChecker)) {
                     int val = text.nextInt(reverseChecker);
                     if (cnt == row.length) {
                         row = Arrays.copyOf(row, row.length * 2);
@@ -40,6 +40,7 @@ public class ReverseSort {
                     row[cnt++] = val;
                     sum += val;
                 }
+                text.skipLine();
                 row = Arrays.copyOf(row, cnt);
                 Arrays.sort(row);
                 for (int i = 0; i < row.length / 2; i++) {
@@ -56,9 +57,8 @@ public class ReverseSort {
                     a = Arrays.copyOf(a, a.length * 2);
                 }
                 a[n++] = new Tuple(sum, n, curRow.toString());
-                text.skipSeparator(reverseChecker);
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.out.println("Input Error: " + e.getMessage());
         } finally {
             text.close();

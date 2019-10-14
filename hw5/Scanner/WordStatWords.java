@@ -28,7 +28,7 @@ public class WordStatWords {
                     if (size == arr.length) {
                         arr = Arrays.copyOf(arr, 2 * size);
                     }
-                    arr[size++] = in.next(wordStatChecker).toString().toLowerCase();
+                    arr[size++] = in.next(wordStatChecker).toLowerCase();
                 }
             } finally {
                 in.close();

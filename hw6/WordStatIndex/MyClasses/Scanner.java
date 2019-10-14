@@ -1,10 +1,8 @@
+package MyClasses;
+
 import java.io.*;
 
-interface Checker {
-    boolean isWordCharacter(char c);
-}
-
-public class Scanner {
+public class Scanner implements Closeable {
 
     private Reader br;
 
@@ -32,12 +30,8 @@ public class Scanner {
         buff = new char[len];
     }
 
-    public void close() {
-        try {
-            br.close();
-        } catch (IOException e) {
-            System.out.println("Can not close reader: " + e.getMessage());
-        }
+    public void close() throws IOException {
+        br.close();
     }
 
     private boolean readInput() throws IOException {
@@ -46,7 +40,7 @@ public class Scanner {
         return size > 0;
     }
 
-    public boolean hasInput() throws IOException {
+    private boolean hasInput() throws IOException {
         return !(size <= 0 || position >= size) || readInput();
     }
 
@@ -56,7 +50,7 @@ public class Scanner {
         }
     }
 
-    public void skipLine() throws IOException {
+    public void skipAllLine() throws IOException {
         while (hasInput()) {
             if (buff[position++] == '\n') {
                 break;
