@@ -13,7 +13,7 @@ class WordStatIndexChecker implements Checker {
     }
 }
 
-public class WordStatIndex {
+public class WordStatFirstIndex {
     private static Checker wordStatIndexChecker = new WordStatIndexChecker();
 
     public static void main(String[] args) {
@@ -23,17 +23,25 @@ public class WordStatIndex {
         }
         Map<String, IntList> map = new LinkedHashMap<>();
         try {
-            try (Scanner in = new Scanner(new FileReader(new File(args[0])))) {
+            try (Scanner in = new Scanner(new FileReader(new File(args[0])), wordStatIndexChecker)) {
                 int position = 1;
-                while (in.hasNext(wordStatIndexChecker)) {
-                    String word = in.next(wordStatIndexChecker).toLowerCase();
+                int lineNum = 1;
+                while (in.hasNext()) {
+                    String word = in.next().toLowerCase();
+                    System.out.print(word + " ");
                     IntList current = map.get(word);
                     if (current == null) {
-                        map.put(word, new IntList(position));
+                        current = new IntList(position, lineNum);
+                        map.put(word, current);
                     } else {
-                        current.add(position);
+                        current.add(position, lineNum);
                     }
                     position++;
+                    if (in.isEndOfLine()) {
+                        System.out.println('\n');
+                        position = 1;
+                        lineNum++;
+                    }
                 }
             }
         } catch (FileNotFoundException e) {
@@ -45,17 +53,10 @@ public class WordStatIndex {
         }
         try (Writer writer = new BufferedWriter(new FileWriter(new File(args[1])))) {
             for (Map.Entry<String, IntList> current : map.entrySet()) {
-                StringBuilder result = new StringBuilder();
-                result.append(current.getKey()).append(' ');
-                result.append(current.getValue().getSize()).append(' ');
-                for (int i = 0; i < current.getValue().getSize(); i++) {
-                    result.append(current.getValue().get(i));
-                    if (i + 1 != current.getValue().getSize()) {
-                        result.append(' ');
-                    }
-                }
-                result.append('\n');
-                writer.write(result.toString());
+                writer.write(current.getKey());
+                writer.write(' ');
+                writer.write(String.valueOf(current.getValue()));
+                writer.write('\n');
             }
         } catch (IOException e) {
             System.out.println("Output error: " + e.getMessage());
