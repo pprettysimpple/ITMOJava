@@ -1,3 +1,6 @@
+import MyClasses.Checker;
+import MyClasses.Scanner;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -17,21 +20,18 @@ public class WordStatWords {
         String[] arr = new String[1];
         int size = 0;
         try {
-            Scanner in = new Scanner(
+            try (Scanner in = new Scanner(
                     new InputStreamReader(
                             new FileInputStream(new File(args[0])),
                             StandardCharsets.UTF_8
-                    )
-            );
-            try {
-                while (in.hasNext(wordStatChecker)) {
+                    ),
+                    wordStatChecker)) {
+                while (in.hasNext()) {
                     if (size == arr.length) {
                         arr = Arrays.copyOf(arr, 2 * size);
                     }
-                    arr[size++] = in.next(wordStatChecker).toLowerCase();
+                    arr[size++] = in.next().toLowerCase();
                 }
-            } finally {
-                in.close();
             }
         } catch (FileNotFoundException e) {
             System.out.println("Input file not found: " + e.getMessage());
@@ -44,10 +44,9 @@ public class WordStatWords {
         arr = Arrays.copyOf(arr, size);
         Arrays.sort(arr);
         try {
-            File outputFile = new File(args[1]);
             try (BufferedWriter out = new BufferedWriter(
                     new OutputStreamWriter(
-                            new FileOutputStream(outputFile),
+                            new FileOutputStream(new File(args[1])),
                             StandardCharsets.UTF_8
                     )
             )) {
