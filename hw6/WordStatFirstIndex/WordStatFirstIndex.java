@@ -21,7 +21,7 @@ public class WordStatFirstIndex {
             System.out.println("Please, write correct filenames.");
             return;
         }
-        Map<String, IntList> map = new LinkedHashMap<>();
+        Map<String, WordStatIntList> map = new LinkedHashMap<>();
         try {
             try (Scanner in = new Scanner(new FileReader(new File(args[0])), wordStatIndexChecker)) {
                 int position = 1;
@@ -29,9 +29,9 @@ public class WordStatFirstIndex {
                 while (in.hasNext()) {
                     String word = in.next().toLowerCase();
                     System.out.print(word + " ");
-                    IntList current = map.get(word);
+                    WordStatIntList current = map.get(word);
                     if (current == null) {
-                        current = new IntList(position, lineNum);
+                        current = new WordStatIntList(position, lineNum);
                         map.put(word, current);
                     } else {
                         current.add(position, lineNum);
@@ -52,7 +52,7 @@ public class WordStatFirstIndex {
             return;
         }
         try (Writer writer = new BufferedWriter(new FileWriter(new File(args[1])))) {
-            for (Map.Entry<String, IntList> current : map.entrySet()) {
+            for (Map.Entry<String, WordStatIntList> current : map.entrySet()) {
                 writer.write(current.getKey());
                 writer.write(' ');
                 writer.write(String.valueOf(current.getValue()));
