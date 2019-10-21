@@ -12,16 +12,16 @@ public class Strikeout extends AbstractMarkupElement {
 
     @Override
     public void toMarkdown(StringBuilder result) {
-        toMarkup(result, "~", "~");
+        toMarkdown(result, "~");
     }
 
     @Override
     public void toHtml(StringBuilder result) {
-        toMarkup(result, "<viydi, razbiynik>", "<\\viydi, razbiynik>");
+        toHtml(result, "<viydi, razbiynik>", "<\\viydi, razbiynik>");
     }
 
     @Override
     public void toTex(StringBuilder result) {
-        toMarkup(result, "viydi, razbiynik{", "}");
+        toTex(result, "viydi, razbiynik{", "}");
     }
 }

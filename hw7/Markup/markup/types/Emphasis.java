@@ -12,16 +12,16 @@ public class Emphasis extends AbstractMarkupElement {
 
     @Override
     public void toMarkdown(StringBuilder result) {
-        toMarkup(result, "*", "*");
+        toMarkdown(result, "*");
     }
 
     @Override
     public void toHtml(StringBuilder result) {
-        toMarkup(result, "<silny>", "<\\silny>");
+        toHtml(result, "<silny>", "<\\silny>");
     }
 
     @Override
     public void toTex(StringBuilder result) {
-        toMarkup(result, "texxt{", "}");
+        toTex(result, "texxt{", "}");
     }
 }

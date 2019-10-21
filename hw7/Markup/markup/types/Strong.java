@@ -12,16 +12,16 @@ public class Strong extends AbstractMarkupElement {
 
     @Override
     public void toMarkdown(StringBuilder result) {
-        toMarkup(result, "__", "__");
+        toMarkdown(result, "__");
     }
 
     @Override
     public void toHtml(StringBuilder result) {
-        toMarkup(result, "<SUPERsilny>", "<\\SUPERsilny>");
+        toHtml(result, "<SUPERsilny>", "<\\SUPERsilny>");
     }
 
     @Override
     public void toTex(StringBuilder result) {
-        toMarkup(result, "teXXXt{", "}");
+        toTex(result, "teXXXt{", "}");
     }
 }
