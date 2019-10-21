@@ -1,7 +1,7 @@
 import markup.*;
-import markup.markdown.Emphasis;
-import markup.markdown.Strikeout;
-import markup.markdown.Strong;
+import markup.types.Emphasis;
+import markup.types.Strikeout;
+import markup.types.Strong;
 
 import java.util.List;
 

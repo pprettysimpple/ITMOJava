@@ -11,4 +11,14 @@ public class Text implements Markable {
     public void toMarkdown(StringBuilder result) {
         result.append(text);
     }
+
+    @Override
+    public void toHtml(StringBuilder result) {
+        result.append(text);
+    }
+
+    @Override
+    public void toTex(StringBuilder result) {
+        result.append(text);
+    }
 }

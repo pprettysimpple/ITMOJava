@@ -3,17 +3,13 @@ package markup;
 import java.util.List;
 
 public abstract class AbstractMarkupElement implements Markable {
-    private String leftBorder, rightBorder;
     private List<Markable> elements;
 
-    protected AbstractMarkupElement(List<Markable> elements, String leftBorder, String rightBorder) {
+    protected AbstractMarkupElement(List<Markable> elements) {
         this.elements = elements;
-        this.leftBorder = leftBorder;
-        this.rightBorder = rightBorder;
     }
 
-    @Override
-    public void toMarkdown(StringBuilder result) {
+    protected void toMarkup(StringBuilder result, String leftBorder, String rightBorder) {
         result.append(leftBorder);
         for (Markable cur : elements) {
             cur.toMarkdown(result);

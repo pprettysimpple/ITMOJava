@@ -15,4 +15,18 @@ public class Paragraph implements Markable {
             cur.toMarkdown(result);
         }
     }
+
+    @Override
+    public void toHtml(StringBuilder result) {
+        for (Markable cur : elements) {
+            cur.toHtml(result);
+        }
+    }
+
+    @Override
+    public void toTex(StringBuilder result) {
+        for (Markable cur : elements) {
+            cur.toTex(result);
+        }
+    }
 }
