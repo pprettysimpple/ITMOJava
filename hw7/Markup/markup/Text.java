@@ -1,6 +1,6 @@
 package markup;
 
-public class Text implements Markable {
+public class Text implements InParagraph {
     private String text;
 
     public Text(String text) {
@@ -14,11 +14,6 @@ public class Text implements Markable {
 
     @Override
     public void toHtml(StringBuilder result) {
-        result.append(text);
-    }
-
-    @Override
-    public void toTex(StringBuilder result) {
         result.append(text);
     }
 }
