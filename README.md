@@ -1,4 +1,4 @@
-# ITMOJavaHW
+# ITMOJava
 My Java home works
 
 **SumHex**
