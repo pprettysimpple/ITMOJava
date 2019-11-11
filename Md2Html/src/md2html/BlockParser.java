@@ -1,7 +1,7 @@
 package md2html;
 
 class BlockParser {
-    StringBuilder source;
+    private StringBuilder source;
 
     BlockParser(StringBuilder source) {
         this.source = source;

@@ -1,7 +1,7 @@
 package md2html;
 
 class HeaderParser {
-    StringBuilder source;
+    private StringBuilder source;
 
     HeaderParser(StringBuilder source) {
         this.source = source;

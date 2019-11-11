@@ -1,7 +1,7 @@
 package md2html;
 
 class ParagraphParser {
-    StringBuilder source;
+    private StringBuilder source;
 
     public ParagraphParser(StringBuilder source) {
         this.source = source;

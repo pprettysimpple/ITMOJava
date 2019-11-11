@@ -1,46 +1,62 @@
 package md2html;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TextParser {
-    StringBuilder source;
+    private StringBuilder source;
+    private static Map<String, Integer> markdownIndex;
+    private static String[] html;
+    private static String[] markdownTag;
+    private static int tagCount;
+    static {
+        html = new String[]{"em", "strong", "em", "strong", "s", "code", "u"};
+        markdownTag = new String[]{"*", "**", "_", "__", "--", "`", "++"};
+        tagCount = markdownTag.length;
+        markdownIndex = new HashMap<>();
+        for (int i = 0; i < tagCount; i++) {
+            markdownIndex.put(markdownTag[i], i);
+        }
+    }
 
     TextParser(StringBuilder source) {
         this.source = source;
     }
 
+    private Integer getTagPosition(int pos) {
+        String cur = source.substring(
+                pos,
+                Math.min(pos + 2, source.length())
+        );
+        Integer res = markdownIndex.get(cur);
+        if (res == null) {
+            res = markdownIndex.get(Character.toString(cur.charAt(0)));
+        }
+        return res;
+    }
+
     public void toHtml(StringBuilder result) {
-        List<String> markdown = new ArrayList<>(List.of("*", "**", "_", "__", "--", "`", "++"));
-        String[] html = {"em", "strong", "em", "strong", "s", "code", "u"};
-        int tagCount = html.length;
-        IntList[] arr = new IntList[tagCount];
-        for (int i = 0; i < tagCount; i++) {
-            arr[i] = new IntList();
-        }
+        int[] count = new int[tagCount];
         for (int i = 0; i < source.length(); i++) {
-            String cur = source.substring(i, Math.min(i + 2, source.length()));
-            int pos = markdown.indexOf(cur);
-            if (pos != -1) {
-                arr[pos].add(i++);
-            } else {
-                cur = cur.substring(0, 1);
-                if (cur.equals("\\")) {
-                    i++;
-                    continue;
-                }
-                pos = markdown.indexOf(cur);
-                if (pos != -1) {
-                    arr[pos].add(i);
-                }
+            char c = source.charAt(i);
+            if (Character.isLetter(c)) {
+                continue;
+            }
+            if (c == '\\') {
+                i++;
+                continue;
+            }
+            Integer pos = getTagPosition(i);
+            if (pos != null) {
+                count[pos]++;
+                i += markdownTag[pos].length() - 1;
             }
         }
-        for (IntList intList : arr) {
-            if (intList.getSize() % 2 == 1) {
-                intList.pop();
+        for (int i = 0; i < tagCount; i++) {
+            if (count[i] % 2 == 1) {
+                count[i]--;
             }
         }
-        int[] pos = new int[tagCount];
         for (int i = 0; i < source.length(); i++) {
             char c = source.charAt(i);
             switch (c) {
@@ -54,26 +70,21 @@ public class TextParser {
                     result.append("&amp;");
                     continue;
                 case '\\':
+                    if (i + 1 < source.length()) {
+                        result.append(source.charAt(++i));
+                    }
                     continue;
             }
-            int needPos = -1;
-            for (int j = 0; j < arr.length; j++) {
-                if (pos[j] < arr[j].getSize()
-                        && arr[j].get(pos[j]) == i) {
-                    needPos = j;
-                    break;
-                }
-            }
-            if (needPos == -1) {
+            Integer needPos = getTagPosition(i);
+            if (needPos == null || count[needPos] == 0) {
                 result.append(c);
             } else {
                 String tagName = html[needPos];
-                int tagSize = markdown.get(needPos).length();
-                boolean isOpen = ((arr[needPos].getSize() - pos[needPos]) % 2 == 0);
+                boolean isOpen = ((count[needPos]) % 2 == 0);
                 String cur = "<" + (isOpen ? "" : "/") + tagName + ">";
                 result.append(cur);
-                i += tagSize - 1;
-                pos[needPos]++;
+                i += markdownTag[needPos].length() - 1;
+                count[needPos]--;
             }
         }
     }
