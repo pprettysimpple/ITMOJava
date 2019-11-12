@@ -2,26 +2,26 @@ package md2html;
 
 import java.util.Arrays;
 
-class IntList {
+public class IntList {
     private int size = 0;
-    private int[] arr = new int[10];
+    private int[] arr = new int[5];
 
-    void add(int value) {
+    public void add(int value) {
         if (size == arr.length) {
             arr = Arrays.copyOf(arr, 3 * arr.length / 2);
         }
         arr[size++] = value;
     }
 
-    void pop() {
-        size--;
-    }
-
-    int get(int position) {
+    public int get(int position) {
         return arr[position];
     }
 
-    int getSize() {
+    public void pop() {
+        size--;
+    }
+
+    public int getSize() {
         return size;
     }
 }
