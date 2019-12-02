@@ -10,12 +10,11 @@ public class TextParser {
     private static Map<String, Integer> markdownIndex;
     private static String[] html;
     private static String[] markdownTag;
-    private static int tagCount;
 
     static {
         html = new String[]{"em", "strong", "em", "strong", "s", "code", "u", "a"};
         markdownTag = new String[]{"*", "**", "_", "__", "--", "`", "++", "["};
-        tagCount = markdownTag.length;
+        int tagCount = markdownTag.length;
         markdownIndex = new HashMap<>();
         for (int i = 0; i < tagCount; i++) {
             markdownIndex.put(markdownTag[i], i);
@@ -74,6 +73,9 @@ public class TextParser {
                     result.append("&amp;");
                     continue;
                 case '\\':
+                    if (i + 1 < source.length()) {
+                        result.append(source.charAt(++i));
+                    }
                     continue;
             }
             Integer needPos = getTagPosition(cur);
@@ -89,6 +91,7 @@ public class TextParser {
                         result.append(c);
                         continue;
                     }
+
                     int p1 = arr[needPos].get(pos[needPos]++);
                     int p2 = arr[needPos].get(pos[needPos]++);
                     int p3 = arr[needPos].get(pos[needPos]++);

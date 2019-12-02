@@ -17,14 +17,12 @@ public class Md2Html {
                             new FileInputStream(
                                     new File(args[0])),
                             StandardCharsets.UTF_8))) {
-                String s = "";
+                String line = "";
                 StringBuilder paragraph = new StringBuilder();
-                while (s != null && (s = reader.readLine()) != null) {
-                    while (s != null && !s.equals("")) {
-                        paragraph
-                                .append(s)
-                                .append('\n');
-                        s = reader.readLine();
+                while (line != null && (line = reader.readLine()) != null) {
+                    while (line != null && !line.isEmpty()) {
+                        paragraph.append(line).append('\n');
+                        line = reader.readLine();
                     }
                     if (paragraph.length() != 0) {
                         paragraph.setLength(paragraph.length() - 1);
@@ -35,7 +33,7 @@ public class Md2Html {
                 }
             }
         } catch (FileNotFoundException e) {
-            System.err.println("Input file not found: " + e.getMessage());
+            System.err.println("Input4 file not found: " + e.getMessage());
         } catch (IOException e) {
             System.err.println("Read error: " + e.getMessage());
         }
