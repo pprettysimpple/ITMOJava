@@ -42,7 +42,7 @@ public class NMKBoard implements Board, Position {
         return new Cell(turn);
     }
 
-    int getCnt(int r, int c, int i, int j) {
+    private int getCnt(int r, int c, int i, int j) {
         int cnt = 0;
         while (r + i >= 0 && c + j >= 0
                 && r + i < cells.length
@@ -64,19 +64,9 @@ public class NMKBoard implements Board, Position {
         int r = move.getRow(), c = move.getColumn();
         cells[r][c] = move.getValue();
 
-        if (won(r, c, 0, 1) || won(r, c, 1, 0)) {
+        if (won(r, c, 0, 1) || won(r, c, 1, 0)
+                || won(r, c, 1, 1) || won(r, c, 1, -1)) {
             return Result.WIN;
-        }
-
-        for (int d1 = -1; d1 <= 1; d1++) {
-            for (int d2 = -1; d2 <= 1; d2++) {
-                if (d1 == 0 && d2 == 0) {
-                    continue;
-                }
-                if (won(r, c, d1, d2)) {
-                    return Result.WIN;
-                }
-            }
         }
 
         if (++filledCount == cells.length * cells[r].length) {

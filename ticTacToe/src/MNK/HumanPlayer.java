@@ -1,8 +1,6 @@
 package MNK;
 
 import java.io.PrintStream;
-import java.util.InputMismatchException;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class HumanPlayer implements Player {
@@ -18,19 +16,27 @@ public class HumanPlayer implements Player {
         this(System.out, new Scanner(System.in));
     }
 
-    Move scanMove(Cell turn) {
+    private Move incorrectMove() {
+        return new Move(-1, -1, new Cell((char)0));
+    }
+
+    private Move scanMove(Cell turn) {
         int row, column;
         Scanner line = new Scanner(in.nextLine());
-        try {
+
+        if (line.hasNextInt()) {
             row = line.nextInt();
-            column = line.nextInt();
-        } catch (NoSuchElementException | NumberFormatException e) {
-            return new Move(-1, -1, turn);
+
+            if (line.hasNextInt()) {
+                column = line.nextInt();
+
+                if (line.hasNext()) {
+                    return incorrectMove();
+                }
+                return new Move(row, column, turn);
+            }
         }
-        if (in.hasNext()) {
-            return new Move(-1, -1, turn);
-        }
-        return new Move(row, column, turn);
+        return incorrectMove();
     }
 
     @Override
@@ -39,7 +45,7 @@ public class HumanPlayer implements Player {
             out.println("Position");
             out.println(position);
             out.println(cell + "'s move");
-            out.println("Enter row and column");
+            out.println("Enter row and column in same line");
             final Move move = scanMove(cell);
             if (position.isValid(move)) {
                 return move;

@@ -23,4 +23,9 @@ public class Cell {
     public int hashCode() {
         return color;
     }
+
+    @Override
+    public String toString() {
+        return Character.toString(color);
+    }
 }

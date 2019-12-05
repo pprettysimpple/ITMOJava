@@ -1,13 +1,12 @@
 package MNK;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        int n = 3, m = 3, k = 3;
-        List<Player> players = List.of(new SequentialPlayer(), new SequentialPlayer(), new SequentialPlayer());
-        int playerCount = players.length;
+        int n = 4, m = 4, k = 4;
+        List<Player> players = List.of(new HumanPlayer(), new SequentialPlayer(), new SequentialPlayer());
+        int playerCount = players.size();
         for (int testCount = 0; testCount < 10; testCount++) {
             final Game game = new Game(true, players);
             int result = game.play(new NMKBoard(n, m, k, playerCount));
