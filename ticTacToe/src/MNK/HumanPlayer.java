@@ -16,27 +16,20 @@ public class HumanPlayer implements Player {
         this(System.out, new Scanner(System.in));
     }
 
-    private Move incorrectMove() {
-        return new Move(-1, -1, new Cell((char)0));
+    int getNext(Scanner line) {
+        if (line.hasNext()) {
+            return line.nextInt();
+        } else {
+            return -1;
+        }
     }
 
     private Move scanMove(Cell turn) {
         int row, column;
         Scanner line = new Scanner(in.nextLine());
-
-        if (line.hasNextInt()) {
-            row = line.nextInt();
-
-            if (line.hasNextInt()) {
-                column = line.nextInt();
-
-                if (line.hasNext()) {
-                    return incorrectMove();
-                }
-                return new Move(row, column, turn);
-            }
-        }
-        return incorrectMove();
+        row = getNext(line);
+        column = getNext(line);
+        return new Move(row, column, turn);
     }
 
     @Override
