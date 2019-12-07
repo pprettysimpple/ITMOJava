@@ -17,7 +17,7 @@ public class HumanPlayer implements Player {
     }
 
     int getNext(Scanner line) {
-        if (line.hasNext()) {
+        if (line.hasNextInt()) {
             return line.nextInt();
         } else {
             return -1;
@@ -29,6 +29,12 @@ public class HumanPlayer implements Player {
         Scanner line = new Scanner(in.nextLine());
         row = getNext(line);
         column = getNext(line);
+        // I need this "if", if I want to read only two integers.
+        // Delete it, if you want.
+        if (line.hasNext()) {
+            row = -1;
+            column = -1;
+        }
         return new Move(row, column, turn);
     }
 
