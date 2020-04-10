@@ -2,9 +2,10 @@ package queue;
 
 public class ArrayQueueADT {
     private int size = 0, capacity = 5, head = 0, tail = 0;
-    private Object[] q = new Object[capacity];
+    private Object[] e = new Object[capacity];
 
-    // INV: contains [e1, e2, ..., en] or empty
+    // INV: contains [e1, e2, ..., en] \forall i in 1..n, ei != null
+    // or empty
     // methods: enqueue, dequeue, element,
     // size, isEmpty, clear, push, peek, get, set
 
@@ -15,9 +16,9 @@ public class ArrayQueueADT {
     private static void ensureCapacity(ArrayQueueADT self) {
         Object[] nw = new Object[self.capacity *= 2];
         for (int i = 0; i < self.size; i++) {
-            nw[i] = self.q[shift(self, i, self.head, self.size)];
+            nw[i] = self.e[shift(self, i, self.head, self.size)];
         }
-        self.q = nw;
+        self.e = nw;
         self.head = 0;
         self.tail = self.size;
     }
@@ -28,7 +29,7 @@ public class ArrayQueueADT {
         if (self.capacity == self.size) {
             ensureCapacity(self);
         }
-        self.q[self.tail] = x;
+        self.e[self.tail] = x;
         self.tail = shift(self, self.tail, 1, self.capacity);
         self.size++;
     }
@@ -43,7 +44,7 @@ public class ArrayQueueADT {
             ensureCapacity(self);
         }
         self.head = shift(self, self.head, -1, self.capacity);
-        self.q[self.head] = x;
+        self.e[self.head] = x;
         self.size++;
     }
     // POST: [e1, ..., en] -> [x, e1, ..., en] = [e1', e2', ..., e(n+1)']
@@ -53,22 +54,22 @@ public class ArrayQueueADT {
     // PRE: not empty
     public static Object element(ArrayQueueADT self) {
         assert(self.size > 0);
-        return self.q[self.head];
+        return self.e[self.head];
     }
     // RET = en
 
     // PRE: not empty
     public static Object peek(ArrayQueueADT self) {
         assert(self.size > 0);
-        return self.q[shift(self, self.tail, -1, self.capacity)];
+        return self.e[shift(self, self.tail, -1, self.capacity)];
     }
     // RET = e1
 
     // PRE: not empty
     public static Object dequeue(ArrayQueueADT self) {
         assert(self.size > 0);
-        Object ret = self.q[self.head];
-        self.q[self.head] = null;
+        Object ret = self.e[self.head];
+        self.e[self.head] = null;
         self.head = shift(self, self.head, 1, self.capacity);
         self.size--;
         return ret;
@@ -80,8 +81,8 @@ public class ArrayQueueADT {
     public static Object remove(ArrayQueueADT self) {
         assert(self.size > 0);
         self.tail = shift(self, self.tail, -1, self.capacity);
-        Object ret = self.q[self.tail];
-        self.q[self.tail] = null;
+        Object ret = self.e[self.tail];
+        self.e[self.tail] = null;
         self.size--;
         return ret;
     }
@@ -90,13 +91,13 @@ public class ArrayQueueADT {
 
     // PRE: index in [0, n - 1]
     public static Object get(ArrayQueueADT self, int index) {
-        return self.q[shift(self, self.head, index, self.capacity)];
+        return self.e[shift(self, self.head, index, self.capacity)];
     }
     // POST: R = e(index + 1)
 
     // PRE: index in [0, n - 1]
     public static void set(ArrayQueueADT self, int index, Object x) {
-        self.q[shift(self, self.head, index, self.capacity)] = x;
+        self.e[shift(self, self.head, index, self.capacity)] = x;
     }
     // POST: e(index + 1) -> x -> e(index + 1)'
 
@@ -115,9 +116,9 @@ public class ArrayQueueADT {
     // PRE: true
     public static void clear(ArrayQueueADT self) {
         for (int i = 0; i < self.size; i++) {
-            self.q[shift(self, i, self.head, self.capacity)] = null;
+            self.e[shift(self, i, self.head, self.capacity)] = null;
         }
-        self.q = new Object[self.capacity = 5];
+        self.e = new Object[self.capacity = 5];
         self.head = 0;
         self.tail = 0;
         self.size = 0;

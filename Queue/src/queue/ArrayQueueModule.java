@@ -2,9 +2,10 @@ package queue;
 
 public class ArrayQueueModule {
     private static int size = 0, capacity = 5, head = 0, tail = 0;
-    private static Object[] q = new Object[capacity];
+    private static Object[] e = new Object[capacity];
 
-    // INV: contains [e1, e2, ..., en] or empty
+    // INV: contains [e1, e2, ..., en] \forall i in 1..n, ei != null
+    // or empty
     // methods: enqueue, dequeue, element,
     // size, isEmpty, clear, push, peek, get, set
 
@@ -15,9 +16,9 @@ public class ArrayQueueModule {
     private static void ensureCapacity() {
         Object[] nw = new Object[capacity *= 2];
         for (int i = 0; i < size; i++) {
-            nw[i] = q[shift(i, head, size)];
+            nw[i] = e[shift(i, head, size)];
         }
-        q = nw;
+        e = nw;
         head = 0;
         tail = size;
     }
@@ -28,7 +29,7 @@ public class ArrayQueueModule {
         if (capacity == size) {
             ensureCapacity();
         }
-        q[tail] = x;
+        e[tail] = x;
         tail = shift(tail, 1, capacity);
         size++;
     }
@@ -43,7 +44,7 @@ public class ArrayQueueModule {
             ensureCapacity();
         }
         head = shift(head, -1, capacity);
-        q[head] = x;
+        e[head] = x;
         size++;
     }
     // POST: [e1, ..., en] -> [x, e1, ..., en] = [e1', e2', ..., e(n+1)']
@@ -53,22 +54,22 @@ public class ArrayQueueModule {
     // PRE: not empty
     public static Object element() {
         assert(size > 0);
-        return q[head];
+        return e[head];
     }
     // RET = en
 
     // PRE: not empty
     public static Object peek() {
         assert(size > 0);
-        return q[shift(tail, -1, capacity)];
+        return e[shift(tail, -1, capacity)];
     }
     // RET = e1
 
     // PRE: not empty
     public static Object dequeue() {
         assert(size > 0);
-        Object ret = q[head];
-        q[head] = null;
+        Object ret = e[head];
+        e[head] = null;
         head = shift(head, 1, capacity);
         size--;
         return ret;
@@ -80,8 +81,8 @@ public class ArrayQueueModule {
     public static Object remove() {
         assert(size > 0);
         tail = shift(tail, -1, capacity);
-        Object ret = q[tail];
-        q[tail] = null;
+        Object ret = e[tail];
+        e[tail] = null;
         size--;
         return ret;
     }
@@ -90,13 +91,13 @@ public class ArrayQueueModule {
 
     // PRE: index in [0, n - 1]
     public static Object get(int index) {
-        return q[shift(head, index, capacity)];
+        return e[shift(head, index, capacity)];
     }
     // POST: R = e(index + 1)
 
     // PRE: index in [0, n - 1]
     public static void set(int index, Object x) {
-        q[shift(head, index, capacity)] = x;
+        e[shift(head, index, capacity)] = x;
     }
     // POST: e(index + 1) -> x -> e(index + 1)'
 
@@ -115,9 +116,9 @@ public class ArrayQueueModule {
     // PRE: true
     public static void clear() {
         for (int i = 0; i < size; i++) {
-            q[shift(i, head, capacity)] = null;
+            e[shift(i, head, capacity)] = null;
         }
-        q = new Object[capacity = 5];
+        e = new Object[capacity = 5];
         head = 0;
         tail = 0;
         size = 0;

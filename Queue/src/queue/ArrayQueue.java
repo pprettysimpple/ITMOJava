@@ -2,39 +2,43 @@ package queue;
 
 public class ArrayQueue {
     private int size = 0, capacity = 5, head = 0, tail = 0;
-    private Object[] q = new Object[capacity];
+    private Object[] e = new Object[capacity];
 
-    // INV: contains [e1, e2, ..., en] or empty
+    // INV: contains [e1, e2, ..., en] \forall i in 1..n, ei != null
+    // or empty
     // methods: enqueue, dequeue, element,
     // size, isEmpty, clear, push, peek, get, set
 
+    //PRE: mod > 0
     private int shift(int x, int shift, int mod) {
         return ((x + shift) % mod + mod) % mod;
     }
+    //POST: R = (x + shift) % mod
+    // e' = e
 
+    //PRE: true
     private void ensureCapacity() {
         Object[] nw = new Object[this.capacity *= 2];
         for (int i = 0; i < this.size; i++) {
-            nw[i] = this.q[shift(i, this.head, this.size)];
+            nw[i] = this.e[shift(i, this.head, this.size)];
         }
-        this.q = nw;
+        this.e = nw;
         this.head = 0;
         this.tail = this.size;
     }
+    //POST: e' = e
 
     // PRE: x != null
+    // POST: e' = [e1, ..., en, x]
     public void enqueue(Object x) {
         assert(x != null);
         if (this.capacity == this.size) {
             ensureCapacity();
         }
-        this.q[this.tail] = x;
+        this.e[this.tail] = x;
         this.tail = shift(this.tail, 1, this.capacity);
         this.size++;
     }
-    // POST: [e1, ..., en] -> [e1, ..., en, x] = [e1', e2', ..., e(n+1)']
-    // or
-    // empty -> [x] = [e1']
 
     // PRE: x != null
     public void push(Object x) {
@@ -43,7 +47,7 @@ public class ArrayQueue {
             ensureCapacity();
         }
         this.head = shift(this.head, -1, this.capacity);
-        this.q[this.head] = x;
+        this.e[this.head] = x;
         this.size++;
     }
     // POST: [e1, ..., en] -> [x, e1, ..., en] = [e1', e2', ..., e(n+1)']
@@ -53,22 +57,24 @@ public class ArrayQueue {
     // PRE: not empty
     public Object element() {
         assert(this.size > 0);
-        return this.q[this.head];
+        return this.e[this.head];
     }
+    // POST: e' = e
     // RET = en
 
     // PRE: not empty
     public Object peek() {
         assert(this.size > 0);
-        return this.q[shift(this.tail, -1, this.capacity)];
+        return this.e[shift(this.tail, -1, this.capacity)];
     }
+    // POST: e' = e
     // RET = e1
 
     // PRE: not empty
     public Object dequeue() {
         assert(this.size > 0);
-        Object ret = this.q[this.head];
-        this.q[this.head] = null;
+        Object ret = this.e[this.head];
+        this.e[this.head] = null;
         this.head = shift(this.head, 1, this.capacity);
         this.size--;
         return ret;
@@ -80,8 +86,8 @@ public class ArrayQueue {
     public Object remove() {
         assert(this.size > 0);
         this.tail = shift(this.tail, -1, this.capacity);
-        Object ret = this.q[this.tail];
-        this.q[this.tail] = null;
+        Object ret = this.e[this.tail];
+        this.e[this.tail] = null;
         this.size--;
         return ret;
     }
@@ -90,39 +96,42 @@ public class ArrayQueue {
 
     // PRE: index in [0, n - 1]
     public Object get(int index) {
-        return this.q[shift(this.head, index, this.capacity)];
+        return this.e[shift(this.head, index, this.capacity)];
     }
     // POST: R = e(index + 1)
+    // e' = e
 
     // PRE: index in [0, n - 1]
     public void set(int index, Object x) {
-        this.q[shift(this.head, index, this.capacity)] = x;
+        this.e[shift(this.head, index, this.capacity)] = x;
     }
-    // POST: e(index + 1) -> x -> e(index + 1)'
+    // POST: e' = e except e(index + 1) -> x -> e(index + 1)'
+    //
 
     // PRE: true
     public int size() {
         return this.size;
     }
+    // POST: e' = e
     // RET = n
 
     // PRE: true
     public boolean isEmpty() {
         return this.size == 0;
     }
+    // POST: e' = e
     // RET = (n == 0)
 
     // PRE: true
     public void clear() {
         for (int i = 0; i < this.size; i++) {
-            this.q[shift(i, this.head, this.capacity)] = null;
+            this.e[shift(i, this.head, this.capacity)] = null;
         }
-        this.q = new Object[this.capacity = 5];
+        this.e = new Object[this.capacity = 5];
         this.head = 0;
         this.tail = 0;
         this.size = 0;
     }
-    // POST: empty -> empty
-    // or
+    // POST:
     // [e1, e2, ..., en] -> empty
 }
