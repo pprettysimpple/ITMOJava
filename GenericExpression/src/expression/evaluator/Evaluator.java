@@ -1,4 +1,5 @@
 package expression.evaluator;
 
-public class Evaluator<T> {
+public interface Evaluator<T> {
+    
 }
