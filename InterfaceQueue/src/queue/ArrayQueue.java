@@ -1,3 +1,5 @@
+package queue;
+
 public class ArrayQueue extends AbstractQueue {
     private Object[] q = new Object[5];
     private int head = 0, tail = 0;
@@ -11,12 +13,14 @@ public class ArrayQueue extends AbstractQueue {
         for (int i = 0; i < size; i++) {
             nq[i] = q[shift(i, head)];
         }
+        head = 0;
+        tail = size;
         q = nq;
     }
 
     @Override
     protected void implEnqueue(Object x) {
-        if (size == q.length) {
+        if (size + 1 >= q.length) {
             ensureCap();
         }
         q[tail] = x;
@@ -28,5 +32,10 @@ public class ArrayQueue extends AbstractQueue {
         Object ret = q[head];
         head = shift(head, 1);
         return ret;
+    }
+
+    @Override
+    protected Object implElement() {
+        return q[head];
     }
 }

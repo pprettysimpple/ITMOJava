@@ -1,29 +1,38 @@
+package queue;
+
 public class LinkedQueue extends AbstractQueue {
     private Node head = null, tail = null;
 
     @Override
     protected void implEnqueue(Object x) {
-        tail = new Node(new Node(x), tail);
+        if (isEmpty()) {
+            head = tail = new Node(x);
+            return;
+        }
+        tail = tail.next = new Node(x);
     }
 
     @Override
     protected Object implDequeue() {
-        Object ret = tail;
-        tail = tail.prev;
+        Object ret = head.val;
+        head = head.next;
+        if (head == null) {
+            tail = null;
+        }
         return ret;
     }
 
+    @Override
+    protected Object implElement() {
+        return head.val;
+    }
+
     static class Node {
-        Node prev;
+        Node next;
         Object val;
 
-        public Node(Object x) {
-            this.val = x;
-        }
-
-        public Node(Object nw, Node last) {
+        public Node(Object nw) {
             this.val = nw;
-            this.prev = last;
         }
     }
 }
