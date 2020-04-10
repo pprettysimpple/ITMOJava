@@ -1,39 +1,53 @@
 package expression;
 
-public abstract class CommonBinaryOperator implements CommonExpression {
+import java.util.Objects;
+
+public abstract class AbstractBinaryOperator implements CommonExpression {
     protected final CommonExpression left, right;
 
-    public CommonBinaryOperator(CommonExpression left, CommonExpression right) {
+    public AbstractBinaryOperator(CommonExpression left, CommonExpression right) {
         this.left = left;
         this.right = right;
     }
 
     protected abstract String getView();
-    protected abstract int getPriority();
-    protected abstract boolean getCommutativity();
     protected abstract int getResult(int left, int right);
 
     @Override
-    public String toString() {
+    final public String toString() {
         StringBuilder res = new StringBuilder();
-        res.append("(").append(left).append(")");
+        res.append("(").append(left).append(" ");
         res.append(getView());
-        res.append("(").append(right).append(")");
+        res.append(" ").append(right).append(")");
         return res.toString();
     }
 
     @Override
-    public String toMiniString() {
+    final public String toMiniString() {
         return toString();
     }
 
     @Override
-    public int evaluate(int x) throws ArithmeticException {
+    final public int evaluate(int x) throws ArithmeticException {
         return getResult(left.evaluate(x), right.evaluate(x));
     }
 
     @Override
-    public int evaluate(int x, int y, int z) {
+    final public int evaluate(int x, int y, int z) {
         return getResult(left.evaluate(x, y, z), right.evaluate(x, y, z));
+    }
+
+    @Override
+    final public boolean equals(Object obj) {
+        if (obj != null && getClass() == obj.getClass()) {
+            return ((AbstractBinaryOperator)obj).left.equals(left)
+                    && ((AbstractBinaryOperator)obj).right.equals(right);
+        }
+        return false;
+    }
+
+    @Override
+    final public int hashCode() {
+        return Objects.hash(getClass(), left, right);
     }
 }

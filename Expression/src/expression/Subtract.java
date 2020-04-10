@@ -1,23 +1,13 @@
 package expression;
 
-public class Substract extends AbstractBinaryOperator {
-    public Substract(AbstractExpression left, AbstractExpression right) {
+public class Subtract extends AbstractBinaryOperator {
+    public Subtract(CommonExpression left, CommonExpression right) {
         super(left, right);
     }
 
     @Override
     protected String getView() {
         return "-";
-    }
-
-    @Override
-    protected int getPriority() {
-        return 0;
-    }
-
-    @Override
-    protected boolean getCommutativity() {
-        return false;
     }
 
     @Override

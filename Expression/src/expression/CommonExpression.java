@@ -1,3 +1,3 @@
 package expression;
 
-interface CommonExpression extends Expression, TripleExpression {}
+public interface CommonExpression extends Expression, TripleExpression {}

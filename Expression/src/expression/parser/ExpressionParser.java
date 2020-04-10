@@ -1,7 +1,6 @@
-package myParser;
+package expression.parser;
 
 import expression.*;
-import expression.parser.Parser;
 
 public class ExpressionParser implements Parser {
     private Token curToken;
@@ -32,16 +31,19 @@ public class ExpressionParser implements Parser {
                 return res;
             case POW2:
                 getNextToken();
-                res = parsePow();
-                return new Power2(res);
+                return new Power2(parsePow());
             case LOG2:
                 getNextToken();
-                res = parsePow();
-                return new Log2(res);
+                return new Log2(parsePow());
             case SUB:
                 getNextToken();
-                res = parsePow();
-                return new Minus(res);
+                if (curToken == Token.CONST) {
+                    res = new Const(Integer.parseInt("-" + tokenizer.getLastToken()));
+                    getNextToken();
+                    return res;
+                } else {
+                    return new Minus(parsePow());
+                }
         }
         throw new IllegalStateException("Wrong operator: " + tokenizer.getLastToken());
     }
@@ -50,9 +52,11 @@ public class ExpressionParser implements Parser {
         CommonExpression res = parsePow();
         while (true) {
             if (curToken == Token.POW) {
+                getNextToken();
                 res = new Power(res, parseItem());
             } else
             if (curToken == Token.LOG){
+                getNextToken();
                 res = new Log(res, parseItem());
             } else {
                 break;
@@ -63,12 +67,14 @@ public class ExpressionParser implements Parser {
 
     private CommonExpression parseItem() {
         CommonExpression res = parseMul();
-        while (true) {
+        while (curToken != Token.END) {
             if (curToken == Token.MUL) {
-                res = new Multiply(res, parseItem());
+                getNextToken();
+                res = new Multiply(res, parseMul());
             } else
             if (curToken == Token.DIV){
-                res = new Divide(res, parseItem());
+                getNextToken();
+                res = new Divide(res, parseMul());
             } else {
                 break;
             }
@@ -78,11 +84,13 @@ public class ExpressionParser implements Parser {
 
     private CommonExpression parseExpression() {
         CommonExpression res = parseItem();
-        while (true) {
+        while (curToken != Token.END) {
             if (curToken == Token.ADD) {
+                getNextToken();
                 res = new Add(res, parseItem());
             } else
             if (curToken == Token.SUB){
+                getNextToken();
                 res = new Subtract(res, parseItem());
             } else {
                 break;
@@ -92,7 +100,7 @@ public class ExpressionParser implements Parser {
     }
 
     @Override
-    public TripleExpression parse(String expression) {
+    public CommonExpression parse(String expression) {
         tokenizer = new Tokenizer(expression);
         getNextToken();
         return parseExpression();
